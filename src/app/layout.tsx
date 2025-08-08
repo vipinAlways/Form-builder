@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Provider from "@/components/Provider";
-
+import { SidebarTrigger } from "@/components/ui/sidebar";
+import SideNav from "@/components/SideNav";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,9 +29,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased w-screen overflow-x-hidden`}
       >
-        <Provider>{children}</Provider>
+        <Provider>
+            <SideNav />
+          <main className="w-full min-h-screen">
+            <Toaster/>
+            {" "}
+             {children}
+          </main>
+        </Provider>
       </body>
     </html>
   );

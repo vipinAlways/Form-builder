@@ -1,8 +1,8 @@
 import mongoose, { Document, Types } from "mongoose";
 export interface UserSchema extends Document {
-  _id: Types.ObjectId;
   name: string;
   email: string;
+  image: string;
   forms: Types.ObjectId | FormSchema[];
 }
 export interface CategorizeOption {
@@ -25,16 +25,30 @@ export interface QuestionsSchema extends Document {
   type: string;
   questionText: string;
   imageUrl: string;
-  categorizeOptions?: CategorizeOption[];
-  blanks: string[];
-  paraGraph: string[];
-  subQuestions: [
-    {
-      questionText: string;
-      options: string[];
-      correctAnswer: string;
-    }
-  ];
+  categorizeOptions?: {
+    items: string[];
+    Belongs: string[];
+    asnwer: Array<{
+      text: string;
+      belongs: string;
+    }>;
+  };
+  blanks?: {
+    option: string[];
+    answer: Array<{
+      position: number;
+      text: string;
+    }>;
+  };
+  paraGraph?: {
+    para: string;
+    subQuestions?: Array<{
+      questionText?: string;
+      options?: string[];
+      correctAnswer?: string;
+    }>;
+  };
+
   options: string[];
   form: Types.ObjectId | FormSchema;
 }

@@ -120,3 +120,12 @@
     @apply bg-background text-foreground;
   }
 }
+
+#color::-webkit-color-swatch,#Background::-webkit-color-swatch {
+  border-radius: 50%;
+
+}
+/* #Background::-moz-color-swatch {
+  border-radius: 50%;
+ 
+} */

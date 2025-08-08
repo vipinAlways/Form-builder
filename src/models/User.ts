@@ -4,7 +4,8 @@ import mongoose, { Schema, Model } from "mongoose";
 const userSchema = new Schema<UserSchema>({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
+  image:{type:String},
   forms: [{ type: Schema.Types.ObjectId, ref: "forms" }],
 });
 
-export const UserModel =  mongoose.models.UserSchema || mongoose.model<UserSchema>("users", userSchema);
+export const UserModel =  mongoose.models.users || mongoose.model<UserSchema>("users", userSchema);

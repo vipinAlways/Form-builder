@@ -18,4 +18,4 @@ const formSchema = new Schema<FormSchema>({
 
 });
 
-export const FormModel = mongoose.models.FormSchema || mongoose.model<FormSchema>("forms", formSchema);
+export const FormModel = mongoose.models.forms || mongoose.model<FormSchema>("forms", formSchema);

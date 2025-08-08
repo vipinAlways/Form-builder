@@ -9,21 +9,45 @@ const questionSchema = new Schema<QuestionsSchema>({
   },
   questionText: { type: String, required: true },
   imageUrl: { type: String },
-  categorizeOptions: [
-    {
-      text: { type: String, required: true },
-      belongs: { type: String, required: true },
+  categorizeOptions: {
+    items: {
+      type: [String],
+      require: true,
     },
-  ],
-  blanks: [String],
-  paraGraph: [String],
-  subQuestions: [
-    {
-      questionText: String, 
-      options: [String],
-      correctAnswer: String,
+    Belongs: { type: [String], require: true },
+    asnwer: [
+      {
+        text: { type: String, required: true },
+        belongs: { type: String, required: true },
+      },
+    ],
+  },
+  blanks: {
+    option: {
+      type: [String],
+      require: true,
     },
-  ],
+    answer: [
+      {
+        position: { type: Number, require: true },
+        text: { type: String, require: true },
+      },
+    ],
+  },
+  paraGraph: {
+    para: {
+      type: String,
+      require: true,
+    },
+    subQuestions: [
+      {
+        questionText: String,
+        options: [String],
+        correctAnswer: String,
+      },
+    ],
+  },
+
   options: [String],
   form: {
     type: mongoose.Schema.Types.ObjectId,
@@ -33,5 +57,5 @@ const questionSchema = new Schema<QuestionsSchema>({
 });
 
 export const questionModel: Model<QuestionsSchema> =
-  mongoose.models.QuestionsSchema ||
+  mongoose.models.questions ||
   mongoose.model<QuestionsSchema>("questions", questionSchema);

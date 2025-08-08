@@ -29,4 +29,4 @@ const submissionSchema = new Schema<SubmissionSchema>({
 });
 
 
-export const submissionModel =  mongoose.models.SubmissionShcema || mongoose.model<SubmissionSchema>("submissions", submissionSchema)
+export const submissionModel =  mongoose.models.submissions || mongoose.model<SubmissionSchema>("submissions", submissionSchema)
