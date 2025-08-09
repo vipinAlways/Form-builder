@@ -80,7 +80,7 @@ const Cloze = ({ initialData, onSave }: QuestiondivProps) => {
                     question: blankQuestion,
                   },
                 }));
-                setBlankQuestion("");
+                
               }}
               disabled={!!questionData.blanks?.question?.trim()}
             >
@@ -88,7 +88,6 @@ const Cloze = ({ initialData, onSave }: QuestiondivProps) => {
             </Button>
           </div>
 
-          {/* Display question */}
           {questionData.blanks?.question && (
             <span className="flex gap-1.5 items-center text-sm border bg-zinc-500 w-fit p-1.5 rounded-lg font-semibold">
               {questionData.blanks.question}

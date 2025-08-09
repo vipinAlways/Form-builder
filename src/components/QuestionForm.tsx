@@ -12,17 +12,9 @@ export interface QuestiondivProps {
 }
 
 export function QuestionForm({ initialData, onSave }: QuestiondivProps) {
-  const [newBelongs, setNewBelongs] = useState<string>("");
+
   const [type, setTypes] = useState<string>("");
-  const [questionText, setQuestionText] = useState(
-    initialData?.questionText || ""
-  );
-
-  const [newItem, setNewItem] = useState<string>("");
-  const [asnwerBlongs, setAsnwerBlongs] = useState<string>("");
-
-  const [questionData, setQuestionData] =
-    useState<QuestionsClient>(emptyQuestion);
+ 
 
   return (
     <div className="border  flex flex-col  gap-4">

@@ -13,7 +13,7 @@ const page = () => {
   if (!session || !session.data?.user || !session.data.user?.image) return null;
   return (
     <div className="p-4">
-      <SidebarTrigger className="sm:hidden" />
+      
       <div className="flex items-start gap-3 flex-col">
         <h1 className="sm:text-5xl font-bold">Hello,</h1>
         <div className="font-semibold sm:text-5xl flex items-center gap-4">

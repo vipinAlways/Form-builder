@@ -35,6 +35,7 @@ export default function RootLayout({
             <SideNav />
           <main className="w-full min-h-screen">
             <Toaster/>
+            <SidebarTrigger className="sm:hidden" />
             {" "}
              {children}
           </main>

@@ -23,7 +23,7 @@ const Categroirze = ({ initialData, onSave }: QuestiondivProps) => {
     setQuestionData((prev) => ({ ...prev, type: "categorize" }));
   }, [initialData]);
   return (
-    <div className="border  flex flex-col  gap-4">
+    <div className="border w-full   flex flex-col  gap-4">
       <div className="w-full flex  md:text-lg text-sm flex-col max-md:items-start font-semibold gap-3 p-2">
         <label htmlFor="Questiontype">
           Type: {questionData.type}
@@ -44,7 +44,7 @@ const Categroirze = ({ initialData, onSave }: QuestiondivProps) => {
               }))
             }
             required
-            className="w-full outline outline-black rounded-lg p-2 h-11"
+            className="w-full outline outline-black rounded-lg p-2 md:h-11 h-16"
             placeholder="Enter Question "
           />
         </label>
@@ -85,7 +85,7 @@ const Categroirze = ({ initialData, onSave }: QuestiondivProps) => {
                 Add
               </Button>
             </div>
-            <div className="flex flex-wrap gap-1.5 w-full">
+            <div className="flex flex-wrap gap-1.5 w-3/5">
               {questionData.categorizeOptions?.Belongs.map((belongs, index) => (
                 <span
                   key={index}
@@ -117,7 +117,7 @@ const Categroirze = ({ initialData, onSave }: QuestiondivProps) => {
 
           <div className="flex flex-col gap-4 text-sm">
             <div className=" rounded-lg">
-              <div className="flex gap-2 mt-2">
+              <div className="flex gap-2 mt-2 max-sm:flex-col">
                 <input
                   type="text"
                   value={newItem}
@@ -128,7 +128,7 @@ const Categroirze = ({ initialData, onSave }: QuestiondivProps) => {
                 <select
                   name=""
                   id=""
-                  className="border rounded px-2 py-1 flex-1 w-40"
+                  className="border rounded px-2 py-1 flex-1 sm:w-40 w-full"
                   value={asnwerBlongs}
                   onChange={(e) => setAsnwerBlongs(e.target.value)}
                 >
