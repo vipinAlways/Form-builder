@@ -33,6 +33,14 @@ const questionSchema = new Schema<QuestionsSchema>({
         text: { type: String, require: true },
       },
     ],
+    blankQuestion:{
+      type:String,
+      require:true
+    },
+    question:{
+      type:String,
+      require:true
+    }
   },
   paraGraph: {
     para: {

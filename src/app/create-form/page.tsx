@@ -123,17 +123,20 @@ const Page = () => {
                       Add Question
                     </div>
                   </DialogTrigger>
-                  <DialogContent>
+                  <DialogContent className="flex flex-col h-4/5 overflow-hidden">
                     <DialogHeader>
                       <DialogTitle>Add Question</DialogTitle>
                       <DialogDescription>
                         Note : Please Check the Question and Spellings
                       </DialogDescription>
                     </DialogHeader>
-                    <QuestionForm
-                      initialData={selectedQuestion}
-                      onSave={handleSaveQuestion}
-                    />
+
+                    <div className="flex-1 overflow-y-auto overflow-x-hidden">
+                      <QuestionForm
+                        initialData={selectedQuestion}
+                        onSave={handleSaveQuestion}
+                      />
+                    </div>
                   </DialogContent>
                 </Dialog>
               </div>

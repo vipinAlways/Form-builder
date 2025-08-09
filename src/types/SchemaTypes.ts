@@ -39,6 +39,8 @@ export interface QuestionsSchema extends Document {
       position: number;
       text: string;
     }>;
+    blankQuestion:string;
+    question:string
   };
   paraGraph?: {
     para: string;

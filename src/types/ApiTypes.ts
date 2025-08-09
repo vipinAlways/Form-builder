@@ -14,11 +14,13 @@ export interface QuestionsClient {
     }>;
   };
   blanks?: {
+    blankQuestion:string
     option: string[];
     answer: Array<{
       position: number;
       text: string;
     }>;
+    question:string
   };
   paraGraph?: {
     para: string;
@@ -41,8 +43,10 @@ export const emptyQuestion: QuestionsClient = {
     items: [],
   },
   blanks: {
+    blankQuestion:"",
     answer: [],
     option: [],
+    question:""
   },
   paraGraph: {
     para: "",
