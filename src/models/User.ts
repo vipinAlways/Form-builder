@@ -1,7 +1,7 @@
 import { UserSchema } from "@/types/SchemaTypes";
 import mongoose, { Schema, Model } from "mongoose";
 
-const userSchema = new Schema<UserSchema>({
+const userSchema:Schema<UserSchema> = new Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   image:{type:String},

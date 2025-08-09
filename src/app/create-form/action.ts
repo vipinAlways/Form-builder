@@ -2,7 +2,8 @@ import { QuestionsClient } from "@/types/ApiTypes";
 
 
 
-interface FormData {
+export interface FormData {
+  _id?:string
   title: string;
   theme: { bg: string; color: string };
   questions: QuestionsClient[]; 

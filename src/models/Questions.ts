@@ -1,7 +1,7 @@
 import { QuestionsSchema } from "@/types/SchemaTypes";
 import mongoose, { Model, Schema } from "mongoose";
 
-const questionSchema = new Schema<QuestionsSchema>({
+const questionSchema:Schema<QuestionsSchema> = new Schema({
   type: {
     type: String,
     enum: ["categorize", "cloze", "comprehension"],

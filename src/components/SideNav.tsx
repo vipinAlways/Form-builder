@@ -24,7 +24,7 @@ const SideNav = () => {
   if(!session || !session.data || !session.data.user) return null
   
   return (
-    <Sidebar className="w-64">
+    <Sidebar className="w-64"  >
       <SidebarHeader className="text-sidebar-accent-foreground">
         <Link
           href={"/"}

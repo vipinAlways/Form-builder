@@ -1,7 +1,7 @@
 import { FormSchema } from "@/types/SchemaTypes";
 import mongoose, { Schema } from "mongoose";
 
-const formSchema = new Schema<FormSchema>({
+const formSchema:Schema<FormSchema> = new Schema({
   title: { type: String, required: true },
   headerImage: { type: String },
   theme:{

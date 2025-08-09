@@ -32,7 +32,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 const Page = () => {
   const { questions, addQuestion, updateQuestion } = useQuestions();
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-  const { isMobile } = useIsMobile();
+  const isMobile = useIsMobile();
   const [formTitle, setFormTitle] = useState<string>("");
   const [headerImage, setHeaderImage] = useState<string>("");
   const [formTheme, setFormTheme] = useState<{ bg: string; color: string }>({
