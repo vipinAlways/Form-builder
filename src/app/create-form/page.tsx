@@ -1,55 +1,65 @@
 "use client";
+import { useQuestions } from "@/components/QuestionContext";
+import { QuestionDisplay } from "@/components/QuestionDisplay";
+import { QuestionForm } from "@/components/QuestionForm";
+import { QuestionsList } from "@/components/QuestionsList";
 import { Button } from "@/components/ui/button";
 import { QuestionsClient } from "@/types/ApiTypes";
+import { useMutation } from "@tanstack/react-query";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 import React, { useState } from "react";
+import { createForm } from "./action";
+import { toast } from "sonner";
 
 const Page = () => {
-  const emptyQuestion: QuestionsClient = {
-    type: "categorize",
-    questionText: "",
-    imageUrl: "",
-    categorizeOptions: {
-      asnwer: [],
-      Belongs: [],
-      items: [],
-    },
-    blanks: {
-      answer: [],
-      option: [],
-    },
-    paraGraph: {
-      para: "",
-      subQuestions: [],
-    },
-    options: [],
-  };
-
-  const [questions, setQuestions] = useState<QuestionsClient[]>([]);
-  const [currentQuestion, setCurrentQuestion] =
-    useState<QuestionsClient>(emptyQuestion);
+  const { questions, addQuestion, updateQuestion } = useQuestions();
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  // const [currentQuestion, setCurrentQuestion] =
+  //   useState<QuestionsClient>(emptyQuestion);
   const [formTitle, setFormTitle] = useState<string>("");
   const [headerImage, setHeaderImage] = useState<string>("");
   const [formTheme, setFormTheme] = useState<{ bg: string; color: string }>({
     bg: "#ffffff",
     color: "#000000",
   });
-  const addQuestion = () => {
-    if (!currentQuestion.questionText.trim()) return;
-    setQuestions((prev) => [...prev, currentQuestion]);
-    setCurrentQuestion(emptyQuestion);
-  };
+  const mutation = useMutation({
+    mutationKey: ["create-form"],
+    mutationFn: createForm,
+    onSuccess: () => toast("Form Created Successfully"),
+    onError: (error) => toast.error("error" + error.message),
+  });
 
   const saveForm = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({
-      title: formTitle,
-      headerImage,
-      theme: formTheme,
-      questions,
-    });
-    
+    if (questions.length === 0) {
+      mutation.mutate({
+        questions: questions,
+        theme: formTheme,
+        title: formTitle,
+      });
+    } else {
+      toast("No question Found");
+    }
   };
+  const handleSaveQuestion = (question: QuestionsClient) => {
+    if (selectedIndex !== null) {
+      updateQuestion(selectedIndex, question);
+    } else {
+      addQuestion(question);
+    }
+    setSelectedIndex(null);
+  };
+
+  const selectedQuestion =
+    selectedIndex !== null ? questions[selectedIndex] : undefined;
 
   return (
     <div className="w-full h-screen p-4">
@@ -102,12 +112,43 @@ const Page = () => {
             color: formTheme.color,
             backgroundColor: formTheme.bg,
           }}
-          className="h-12 p-3 border"
+          className="p-3 rounded-lg"
         >
-          Preview text
+          <div className="">
+            <div className="flex gap-4 flex-col">
+              <div className="flex-1">
+                <Dialog>
+                  <DialogTrigger className="w-full flex justify-end">
+                    <div className="bg-[#0F172B] p-3 rounded-lg text-zinc-50">
+                      Add Question
+                    </div>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Add Question</DialogTitle>
+                      <DialogDescription>
+                        Note : Please Check the Question and Spellings
+                      </DialogDescription>
+                    </DialogHeader>
+                    <QuestionForm
+                      initialData={selectedQuestion}
+                      onSave={handleSaveQuestion}
+                    />
+                  </DialogContent>
+                </Dialog>
+              </div>
+              <div className="flex-1">
+                <QuestionsList
+                  questions={questions}
+                  onSelect={setSelectedIndex}
+                />
+                {selectedQuestion && (
+                  <QuestionDisplay question={selectedQuestion} />
+                )}
+              </div>
+            </div>
+          </div>
         </div>
-
-        <div className="border p-4 rounded-lg"></div>
 
         <Button type="submit">Save Form</Button>
       </form>

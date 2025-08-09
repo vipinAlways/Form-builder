@@ -2,7 +2,7 @@
 
 // Client-side TypeScript interface
 export interface QuestionsClient {
-  type: "categorize" | "cloze" | "comprehension";
+  type: "categorize" | "cloze" | "comprehension" | string;
   questionText: string;
   imageUrl?: string;
   categorizeOptions?: {
@@ -30,4 +30,24 @@ export interface QuestionsClient {
   };
   options?: string[];
 }
+
+export const emptyQuestion: QuestionsClient = {
+  type: "categorize",
+  questionText: "",
+  imageUrl: "",
+  categorizeOptions: {
+    asnwer: [],
+    Belongs: [],
+    items: [],
+  },
+  blanks: {
+    answer: [],
+    option: [],
+  },
+  paraGraph: {
+    para: "",
+    subQuestions: [],
+  },
+  options: [],
+};
 // Mongoose document type (for server-side usage)

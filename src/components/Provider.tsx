@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SessionProvider } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { SidebarProvider } from "./ui/sidebar";
+import { QuestionsProvider } from "./QuestionContext";
 
 const Provider = ({ children }: { children: React.ReactNode }) => {
   const [mount, setMount] = useState<boolean>(false);
@@ -15,7 +16,9 @@ const Provider = ({ children }: { children: React.ReactNode }) => {
   return (
     <QueryClientProvider client={queryClient}>
       <SessionProvider>
-        <SidebarProvider>{children}</SidebarProvider>
+        <SidebarProvider>
+          <QuestionsProvider>{children}</QuestionsProvider>
+        </SidebarProvider>
       </SessionProvider>
     </QueryClientProvider>
   );
