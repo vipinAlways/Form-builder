@@ -125,7 +125,6 @@
   border-radius: 50%;
 
 }
-/* #Background::-moz-color-swatch {
-  border-radius: 50%;
- 
-} */
+ol{
+  list-style-type: upper-alpha;
+}

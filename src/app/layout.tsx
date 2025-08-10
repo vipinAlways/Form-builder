@@ -29,16 +29,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased w-screen overflow-x-hidden`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased w-full min-h-screen`}
       >
         <Provider>
-            <SideNav />
           <main className="w-full min-h-screen">
-            <SidebarTrigger className="sm:hidden"/>
-            <Toaster/>
-            
-            {" "}
-             {children}
+            <SidebarTrigger className="sm:hidden" />
+            <Toaster /> {children}
           </main>
         </Provider>
       </body>

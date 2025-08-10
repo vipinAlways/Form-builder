@@ -5,6 +5,7 @@ import { SessionProvider } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { SidebarProvider } from "./ui/sidebar";
 import { QuestionsProvider } from "./QuestionContext";
+import SideNav from "./SideNav";
 
 const Provider = ({ children }: { children: React.ReactNode }) => {
   const [mount, setMount] = useState<boolean>(false);
@@ -17,7 +18,10 @@ const Provider = ({ children }: { children: React.ReactNode }) => {
     <QueryClientProvider client={queryClient}>
       <SessionProvider>
         <SidebarProvider>
-          <QuestionsProvider>{children}</QuestionsProvider>
+          <QuestionsProvider>
+            <SideNav />
+            {children}
+          </QuestionsProvider>
         </SidebarProvider>
       </SessionProvider>
     </QueryClientProvider>

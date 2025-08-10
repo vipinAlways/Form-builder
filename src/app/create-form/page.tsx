@@ -88,10 +88,10 @@ const Page = () => {
   }, [headerImage]);
 
   return (
-    <div className="w-full h-screen p-4 flex items-center justify-center relative">
+    <div className="w-full h-full p-4 relative">
       <form
         onSubmit={saveForm}
-        className="ms:w-4/5 w-full min-h-full mx-auto border-2 border-black rounded-lg  p-4 flex flex-col gap-4 "
+        className=" w-full h-full  mx-auto border-2 border-black rounded-lg p-4 flex flex-col gap-4"
       >
         <div className="w-full flex items-center justify-between max-sm:flex-col gap-1.5">
           <div className="flex gap-1.5 sm:flex-col items-center sm:items-start text-lg">
@@ -163,7 +163,6 @@ const Page = () => {
                           setHeaderImage("");
                           setOpen(false);
                         }}
-                       
                       >
                         Cancel
                       </Button>
@@ -171,7 +170,6 @@ const Page = () => {
                         onClick={() => {
                           setOpen(false);
                         }}
-                       
                       >
                         Continue
                       </Button>
@@ -258,12 +256,12 @@ const Page = () => {
                   </Drawer>
                 ) : (
                   <Dialog>
-                    <DialogTrigger className=" flex justify-end">
+                    <DialogTrigger className=" flex justify-end ">
                       <div className="bg-[#0F172B] p-3 rounded-lg text-zinc-50">
                         Add Question
                       </div>
                     </DialogTrigger>
-                    <DialogContent className="flex flex-col h-4/5 overflow-hidden min-w-2xl ">
+                    <DialogContent className="flex flex-col h-[80dvh] w-full overflow-hidden min-w-2xl ">
                       <DialogHeader>
                         <DialogTitle>Add Question</DialogTitle>
                         <DialogDescription>
@@ -271,7 +269,7 @@ const Page = () => {
                         </DialogDescription>
                       </DialogHeader>
 
-                      <div className="flex-1 overflow-y-auto overflow-x-hidden">
+                      <div className="flex-1 overflow-y-scroll h-full overflow-x-hidden w-full">
                         <QuestionForm
                           initialData={selectedQuestion}
                           onSave={handleSaveQuestion}
@@ -281,20 +279,15 @@ const Page = () => {
                   </Dialog>
                 )}
               </div>
-              <div className="flex-1">
-                <QuestionsList
-                  questions={questions}
-                  onSelect={setSelectedIndex}
-                />
-                {selectedQuestion && (
-                  <QuestionDisplay question={selectedQuestion} />
-                )}
+              <div className="sm:min-w-xl  h-[70dvh] overflow-y-scroll ">
+                <QuestionsList questions={questions} isMobile={isMobile} />
               </div>
             </div>
           </div>
         </div>
-
-        {questions.length !== 0 &&
+          
+       <div>
+         {questions.length !== 0 &&
           (render === "create" ? (
             <div className="w-full flex items-center justify-around">
               <Link
@@ -312,6 +305,7 @@ const Page = () => {
           ) : (
             <Button type="submit">Save Form</Button>
           ))}
+       </div>
       </form>
     </div>
   );

@@ -233,7 +233,7 @@ const Cloze = ({ initialData, onSave, isMobile }: QuestiondivProps) => {
           <div className="flex gap-2 mt-2">
             <select
               className="border rounded px-2 py-1 flex-1 w-40"
-              value={blankOption.position || ""}
+              value={blankOption.position}
               onChange={(e) => {
                 const idx = Number(e.target.value);
                 const word =
