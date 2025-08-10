@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { emptyQuestion, QuestionsClient } from "@/types/ApiTypes";
@@ -23,9 +25,16 @@ import {
 import Uploadimage from "./Uploadimage";
 import Image from "next/image";
 
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  DropResult,
+} from "@hello-pangea/dnd";
+
 const Comprehension = ({ initialData, onSave, isMobile }: QuestiondivProps) => {
   const [newPara, setNewPara] = useState("");
-  const [open, setOpen] = useState<boolean>();
+  const [open, setOpen] = useState<boolean>(false);
   const [disable, setDisable] = useState<boolean>(false);
   const [newSubQText, setNewSubQText] = useState("");
   const [newOption, setNewOption] = useState("");
@@ -36,14 +45,36 @@ const Comprehension = ({ initialData, onSave, isMobile }: QuestiondivProps) => {
   );
 
   const havePara = !!questionData.paraGraph?.para;
+
+  // Reorder subQuestions on drag end
+  const handleDragEnd = (result: DropResult) => {
+    if (!result.destination) return;
+
+    const items = Array.from(questionData.paraGraph?.subQuestions || []);
+    const [reordered] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reordered);
+
+    setQuestionData((prev) => ({
+      ...prev,
+      paraGraph: {
+        ...(prev.paraGraph || { para: "", subQuestions: [] }),
+        subQuestions: items,
+      },
+    }));
+  };
+
   const handleAddPara = () => {
-    if (!newPara.trim()) toast("Para is Emtpy");
+    if (!newPara.trim()) {
+      toast.error("Paragraph is empty");
+      return;
+    }
     if (!havePara) {
       setQuestionData((prev) => ({
         ...prev,
         paraGraph: {
           ...(prev.paraGraph || { para: "", subQuestions: [] }),
           para: newPara,
+          subQuestions: prev.paraGraph?.subQuestions || [],
         },
       }));
     } else {
@@ -52,14 +83,26 @@ const Comprehension = ({ initialData, onSave, isMobile }: QuestiondivProps) => {
         paraGraph: {
           ...(prev.paraGraph || { para: "", subQuestions: [] }),
           para: "",
+          subQuestions: prev.paraGraph?.subQuestions || [],
         },
       }));
+      setNewPara("");
     }
   };
 
   const handleAddSubQuestion = () => {
-    if (!newSubQText.trim() || currentOptions.length === 0 || !correctAnswer)
+    if (!newSubQText.trim()) {
+      toast.error("Subquestion text is empty");
       return;
+    }
+    if (currentOptions.length === 0) {
+      toast.error("Add at least one option");
+      return;
+    }
+    if (!correctAnswer) {
+      toast.error("Set the correct answer");
+      return;
+    }
 
     setQuestionData((prev) => ({
       ...prev,
@@ -97,7 +140,7 @@ const Comprehension = ({ initialData, onSave, isMobile }: QuestiondivProps) => {
   }, [initialData]);
 
   return (
-    <div className="border flex flex-col gap-4 p-4 sm:w-full ">
+    <div className="border flex flex-col gap-4 p-4 sm:w-full">
       <div className="flex max-md:flex-col items-center sm:justify-between">
         <label htmlFor="Questiontype">Type: {questionData.type}</label>
         <div className="flex items-center gap-5">
@@ -113,12 +156,12 @@ const Comprehension = ({ initialData, onSave, isMobile }: QuestiondivProps) => {
             />
           </div>
           {questionData.imageUrl && (
-            <div className="">
+            <div>
               {isMobile ? (
-                <Drawer open={open}>
+                <Drawer open={open} onOpenChange={setOpen}>
                   <DrawerTrigger className="w-fit flex justify-end">
                     <div className="bg-[#0F172B] p-2 rounded-lg text-zinc-50">
-                      PreviewImage
+                      Preview Image
                     </div>
                   </DrawerTrigger>
 
@@ -127,13 +170,13 @@ const Comprehension = ({ initialData, onSave, isMobile }: QuestiondivProps) => {
                       <DrawerTitle>Image</DrawerTitle>
                     </DrawerHeader>
                     <Image
-                      height="60"
-                      width="300"
+                      height={60}
+                      width={300}
                       src={questionData.imageUrl}
                       alt="Uploaded"
                       className="w-full h-96 object-contain rounded-lg"
                     />
-                    <DrawerFooter className="flex items-center gap-5 w-full flex-row justify-around pb-10  ">
+                    <DrawerFooter className="flex items-center gap-5 w-full flex-row justify-around pb-10">
                       <Button
                         onClick={() => {
                           setQuestionData((prev) => ({
@@ -145,32 +188,26 @@ const Comprehension = ({ initialData, onSave, isMobile }: QuestiondivProps) => {
                       >
                         Cancel
                       </Button>
-                      <Button
-                        onClick={() => {
-                          setOpen(false);
-                        }}
-                      >
-                        Continue
-                      </Button>
+                      <Button onClick={() => setOpen(false)}>Continue</Button>
                     </DrawerFooter>
                   </DrawerContent>
                 </Drawer>
               ) : (
-                <Dialog open={open}>
+                <Dialog open={open} onOpenChange={setOpen}>
                   <DialogTrigger className="w-full flex justify-start">
                     <div className="bg-[#0F172B] p-2 rounded-lg text-zinc-50">
                       Preview Image
                     </div>
                   </DialogTrigger>
-                  <DialogContent className="flex flex-col h-4/5 overflow-hidden min-w-2xl ">
+                  <DialogContent className="flex flex-col h-4/5 overflow-hidden min-w-2xl">
                     <DialogHeader>
                       <DialogTitle>Form Image</DialogTitle>
                     </DialogHeader>
 
                     <div className="flex-1 overflow-y-auto overflow-x-hidden">
                       <Image
-                        height="60"
-                        width="300"
+                        height={60}
+                        width={300}
                         src={questionData.imageUrl}
                         alt="Uploaded"
                         className="w-full h-96 object-contain rounded-lg"
@@ -188,13 +225,7 @@ const Comprehension = ({ initialData, onSave, isMobile }: QuestiondivProps) => {
                       >
                         Cancel
                       </Button>
-                      <Button
-                        onClick={() => {
-                          setOpen(false);
-                        }}
-                      >
-                        Continue
-                      </Button>
+                      <Button onClick={() => setOpen(false)}>Continue</Button>
                     </DialogFooter>
                   </DialogContent>
                 </Dialog>
@@ -238,10 +269,58 @@ const Comprehension = ({ initialData, onSave, isMobile }: QuestiondivProps) => {
         </div>
       </label>
 
-      <div className="border-2 border-zinc-50 p-2 text-sm ">
+      <div className="border-2 border-zinc-50 p-2 text-sm">
         {questionData.paraGraph?.para && (
-          <div className="border-t pt-4">
-            <label className="flex flex-col gap-1">
+          <DragDropContext onDragEnd={handleDragEnd}>
+            <Droppable droppableId="subQuestions">
+              {(provided) => (
+                <div
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                  className="space-y-2"
+                >
+                  {(questionData.paraGraph?.subQuestions || []).map(
+                    (subQ, index) => (
+                      <Draggable
+                        key={index}
+                        draggableId={`${index}`}
+                        index={index}
+                      >
+                        {(provided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            className="p-3 border rounded bg-white"
+                          >
+                            <div className="font-semibold mb-1">
+                              {subQ.questionText}
+                            </div>
+                            <ul className="list-disc list-inside mb-1">
+                              {subQ.options?.map((opt, idx) => (
+                                <li
+                                  key={idx}
+                                  className={
+                                    opt === subQ.correctAnswer
+                                      ? "font-bold text-green-600"
+                                      : ""
+                                  }
+                                >
+                                  {opt}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </Draggable>
+                    )
+                  )}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+
+            <label className="flex flex-col gap-1 mt-4">
               Subquestion Text
               <input
                 type="text"
@@ -288,14 +367,14 @@ const Comprehension = ({ initialData, onSave, isMobile }: QuestiondivProps) => {
               ))}
             </div>
 
-            <Button className="w-full " onClick={handleAddSubQuestion}>
+            <Button className="w-full mt-4" onClick={handleAddSubQuestion}>
               Add Subquestion
             </Button>
-          </div>
+          </DragDropContext>
         )}
       </div>
 
-      <Button className="w-full" onClick={handleSave}>
+      <Button className="w-full mt-4" onClick={handleSave}>
         Save Question
       </Button>
     </div>
