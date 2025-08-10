@@ -10,6 +10,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -24,10 +25,14 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { createForm } from "./action";
 import { toast } from "sonner";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
+import Link from "next/link";
+import Uploadimage from "@/components/Uploadimage";
+import Image from "next/image";
 
 const Page = () => {
   const { questions, addQuestion, updateQuestion } = useQuestions();
@@ -35,6 +40,9 @@ const Page = () => {
   const isMobile = useIsMobile();
   const [formTitle, setFormTitle] = useState<string>("");
   const [headerImage, setHeaderImage] = useState<string>("");
+  const [render, setRender] = useState<string>("create");
+  const [open, setOpen] = useState<boolean>();
+  const [disable, setDisable] = useState<boolean>(false);
   const [formTheme, setFormTheme] = useState<{ bg: string; color: string }>({
     bg: "#ffffff",
     color: "#000000",
@@ -58,6 +66,12 @@ const Page = () => {
       toast("No question Found");
     }
   };
+  const handleRender = () => {
+    setRender("loading");
+    setTimeout(() => {
+      setRender("Preview");
+    }, 1500);
+  };
   const handleSaveQuestion = (question: QuestionsClient) => {
     if (selectedIndex !== null) {
       updateQuestion(selectedIndex, question);
@@ -69,9 +83,12 @@ const Page = () => {
 
   const selectedQuestion =
     selectedIndex !== null ? questions[selectedIndex] : undefined;
+  useEffect(() => {
+    setDisable(headerImage !== "");
+  }, [headerImage]);
 
   return (
-    <div className="w-full h-screen p-4">
+    <div className="w-full h-screen p-4 flex items-center justify-center relative">
       <form
         onSubmit={saveForm}
         className="ms:w-4/5 w-full min-h-full mx-auto border-2 border-black rounded-lg  p-4 flex flex-col gap-4 "
@@ -115,7 +132,96 @@ const Page = () => {
             </div>
           </div>
         </div>
+        <div className="flex items-center gap-5">
+          <div className="flex items-center flex-col ">
+            <Uploadimage onUpload={setHeaderImage} disable={disable} />
+          </div>
+          {headerImage && (
+            <div className="">
+              {isMobile ? (
+                <Drawer open={open} onOpenChange={setOpen}>
+                  <DrawerTrigger className="w-fit flex justify-end">
+                    <div className="bg-[#0F172B] p-2 rounded-lg text-zinc-50">
+                      PreviewImage
+                    </div>
+                  </DrawerTrigger>
 
+                  <DrawerContent className="flex flex-col h-[60dvh] w-screen p-0">
+                    <DrawerHeader className="shrink-0 p-4">
+                      <DrawerTitle>Image</DrawerTitle>
+                    </DrawerHeader>
+                    <Image
+                      height="60"
+                      width="300"
+                      src={headerImage}
+                      alt="Uploaded"
+                      className="w-full h-96 object-contain rounded-lg"
+                    />
+                    <DrawerFooter className="flex items-center gap-5 w-full flex-row justify-around pb-10  ">
+                      <Button
+                        onClick={() => {
+                          setHeaderImage("");
+                          setOpen(false);
+                        }}
+                       
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          setOpen(false);
+                        }}
+                       
+                      >
+                        Continue
+                      </Button>
+                    </DrawerFooter>
+                  </DrawerContent>
+                </Drawer>
+              ) : (
+                <Dialog>
+                  <DialogTrigger className="w-full flex justify-start">
+                    <div className="bg-[#0F172B] p-2 rounded-lg text-zinc-50">
+                      Preview Image
+                    </div>
+                  </DialogTrigger>
+                  <DialogContent className="flex flex-col h-4/5 overflow-hidden min-w-2xl ">
+                    <DialogHeader>
+                      <DialogTitle>Form Image</DialogTitle>
+                    </DialogHeader>
+
+                    <div className="flex-1 overflow-y-auto overflow-x-hidden">
+                      <Image
+                        height="60"
+                        width="300"
+                        src={headerImage}
+                        alt="Uploaded"
+                        className="w-full h-96 object-contain rounded-lg"
+                      />
+                    </div>
+                    <DialogFooter className="flex items-center gap-5 w-48 justify-around">
+                      <Button
+                        onClick={() => {
+                          setHeaderImage("");
+                          setOpen(false);
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          setOpen(false);
+                        }}
+                      >
+                        Continue
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              )}
+            </div>
+          )}
+        </div>
         <div
           style={{
             color: formTheme.color,
@@ -125,17 +231,16 @@ const Page = () => {
         >
           <div className="">
             <div className="flex gap-4 flex-col">
-              <div className="flex-1">
+              <div className="w-full flex justify-end">
                 {isMobile ? (
                   <Drawer>
-                    <DrawerTrigger className="w-fit flex justify-end">
+                    <DrawerTrigger className="">
                       <div className="bg-[#0F172B] p-3 rounded-lg text-zinc-50">
                         Add Question
                       </div>
                     </DrawerTrigger>
 
                     <DrawerContent className="flex flex-col h-[100dvh] w-screen p-0">
-                      {/* Header stays fixed */}
                       <DrawerHeader className="shrink-0 p-4">
                         <DrawerTitle>Add Question</DrawerTitle>
                         <DrawerDescription>
@@ -153,7 +258,7 @@ const Page = () => {
                   </Drawer>
                 ) : (
                   <Dialog>
-                    <DialogTrigger className="w-full flex justify-end">
+                    <DialogTrigger className=" flex justify-end">
                       <div className="bg-[#0F172B] p-3 rounded-lg text-zinc-50">
                         Add Question
                       </div>
@@ -189,7 +294,24 @@ const Page = () => {
           </div>
         </div>
 
-        <Button type="submit">Save Form</Button>
+        {questions.length !== 0 &&
+          (render === "create" ? (
+            <div className="w-full flex items-center justify-around">
+              <Link
+                href={"/"}
+                className="rounded-md bg-zinc-500/80 hover:bg-zinc-500 py-1.5 px-2 "
+              >
+                Cancel
+              </Link>
+              <Button onClick={handleRender}>Preview</Button>
+            </div>
+          ) : render === "loading" ? (
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-bold text-2xl">
+              Wait It Will tak a whil
+            </div>
+          ) : (
+            <Button type="submit">Save Form</Button>
+          ))}
       </form>
     </div>
   );

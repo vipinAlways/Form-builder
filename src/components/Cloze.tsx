@@ -3,7 +3,24 @@ import { Button } from "./ui/button";
 import { emptyQuestion, QuestionsClient } from "@/types/ApiTypes";
 import { QuestiondivProps } from "./QuestionForm";
 import { X } from "lucide-react";
-
+import Uploadimage from "./Uploadimage";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+import Image from "next/image";
 const defaultBlanks = {
   answer: [],
   option: [],
@@ -11,12 +28,14 @@ const defaultBlanks = {
   question: "",
 };
 
-const Cloze = ({ initialData, onSave }: QuestiondivProps) => {
+const Cloze = ({ initialData, onSave, isMobile }: QuestiondivProps) => {
   const [blankQuestion, setBlankQuestion] = useState("");
   const [blankOption, setBlankOption] = useState({ position: 0, text: "" });
   const [questionData, setQuestionData] = useState<QuestionsClient>(
     initialData || emptyQuestion
   );
+  const [open, setOpen] = useState<boolean>();
+  const [disable, setDisable] = useState<boolean>(false);
 
   const handleSave = () => {
     onSave(questionData);
@@ -38,11 +57,114 @@ const Cloze = ({ initialData, onSave }: QuestiondivProps) => {
   }, [initialData]);
 
   return (
-    <div className="border flex flex-col gap-4">
+    <div className="border flex flex-col gap-4 sm:w-full sm:p-2">
       <div className="w-full flex flex-col max-md:items-start font-semibold gap-3 p-2">
-        <label htmlFor="Questiontype">Type: {questionData.type}</label>
+        <div className="flex max-md:flex-col items-center sm:justify-between">
+          <label htmlFor="Questiontype">Type: {questionData.type}</label>
+          <div className="flex items-center gap-5">
+            <div className="flex items-center flex-col ">
+              <Uploadimage
+                onUpload={(url) =>
+                  setQuestionData((prev) => ({
+                    ...prev,
+                    imageUrl: url,
+                  }))
+                }
+                disable={disable}
+              />
+            </div>
+            {questionData.imageUrl && (
+              <div className="">
+                {isMobile ? (
+                  <Drawer open={open}>
+                    <DrawerTrigger className="w-fit flex justify-end">
+                      <div className="bg-[#0F172B] p-2 rounded-lg text-zinc-50">
+                        PreviewImage
+                      </div>
+                    </DrawerTrigger>
 
-       
+                    <DrawerContent className="flex flex-col h-[60dvh] w-screen p-0">
+                      <DrawerHeader className="shrink-0 p-4">
+                        <DrawerTitle>Image</DrawerTitle>
+                      </DrawerHeader>
+                      <Image
+                        height="60"
+                        width="300"
+                        src={questionData.imageUrl}
+                        alt="Uploaded"
+                        className="w-full h-96 object-contain rounded-lg"
+                      />
+                      <DrawerFooter className="flex items-center gap-5 w-full flex-row justify-around pb-10  ">
+                        <Button
+                          onClick={() => {
+                            setQuestionData((prev) => ({
+                              ...prev,
+                              imageUrl: "",
+                            }));
+                            setOpen(false);
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            setOpen(false);
+                          }}
+                        >
+                          Continue
+                        </Button>
+                      </DrawerFooter>
+                    </DrawerContent>
+                  </Drawer>
+                ) : (
+                  <Dialog open={open}>
+                    <DialogTrigger className="w-full flex justify-start">
+                      <div className="bg-[#0F172B] p-2 rounded-lg text-zinc-50">
+                        Preview Image
+                      </div>
+                    </DialogTrigger>
+                    <DialogContent className="flex flex-col h-4/5 overflow-hidden min-w-2xl ">
+                      <DialogHeader>
+                        <DialogTitle>Form Image</DialogTitle>
+                      </DialogHeader>
+
+                      <div className="flex-1 overflow-y-auto overflow-x-hidden">
+                        <Image
+                          height="60"
+                          width="300"
+                          src={questionData.imageUrl}
+                          alt="Uploaded"
+                          className="w-full h-96 object-contain rounded-lg"
+                        />
+                      </div>
+                      <DialogFooter className="flex items-center gap-5 w-48 justify-around">
+                        <Button
+                          onClick={() => {
+                            setQuestionData((prev) => ({
+                              ...prev,
+                              imageUrl: "",
+                            }));
+                            setOpen(false);
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            setOpen(false);
+                          }}
+                        >
+                          Continue
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+
         <label className="flex flex-col gap-1.5 items-start w-full">
           Question
           <textarea
@@ -80,7 +202,6 @@ const Cloze = ({ initialData, onSave }: QuestiondivProps) => {
                     question: blankQuestion,
                   },
                 }));
-                
               }}
               disabled={!!questionData.blanks?.question?.trim()}
             >

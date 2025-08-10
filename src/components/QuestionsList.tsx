@@ -1,6 +1,6 @@
-import { QuestionsClient } from '@/types/ApiTypes';
-import React from 'react';
-
+import { QuestionsClient } from "@/types/ApiTypes";
+import Image from "next/image";
+import React from "react";
 
 interface QuestionsListProps {
   questions: QuestionsClient[];
@@ -14,8 +14,25 @@ export function QuestionsList({ questions, onSelect }: QuestionsListProps) {
       {questions.length === 0 && <p>No questions added yet.</p>}
       <ul>
         {questions.map((q, i) => (
-          <li key={i} className='cursor-pointer mb-3' onClick={() => onSelect(i)}>
-            <strong>{q.type.toUpperCase()}</strong>: {q.questionText.slice(0, 40)}...
+          <li
+            key={i}
+            className="cursor-pointer mb-3"
+            onClick={() => onSelect(i)}
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex-1"></div>
+              <div className="flex-1">
+                {q.imageUrl && (
+                  <Image
+                    src={q.imageUrl}
+                    alt="Questionimage"
+                    width={60}
+                    height={60}
+                    className="object-cover aspect-1/1"
+                  />
+                )}
+              </div>
+            </div>
           </li>
         ))}
       </ul>

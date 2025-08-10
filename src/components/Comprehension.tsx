@@ -4,9 +4,29 @@ import { emptyQuestion, QuestionsClient } from "@/types/ApiTypes";
 import { QuestiondivProps } from "./QuestionForm";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+import Uploadimage from "./Uploadimage";
+import Image from "next/image";
 
-const Comprehension = ({ initialData, onSave }: QuestiondivProps) => {
+const Comprehension = ({ initialData, onSave, isMobile }: QuestiondivProps) => {
   const [newPara, setNewPara] = useState("");
+  const [open, setOpen] = useState<boolean>();
+  const [disable, setDisable] = useState<boolean>(false);
   const [newSubQText, setNewSubQText] = useState("");
   const [newOption, setNewOption] = useState("");
   const [currentOptions, setCurrentOptions] = useState<string[]>([]);
@@ -77,8 +97,112 @@ const Comprehension = ({ initialData, onSave }: QuestiondivProps) => {
   }, [initialData]);
 
   return (
-    <div className="border flex flex-col gap-4 p-4">
-      <label>Type: {questionData.type}</label>
+    <div className="border flex flex-col gap-4 p-4 sm:w-full ">
+      <div className="flex max-md:flex-col items-center sm:justify-between">
+        <label htmlFor="Questiontype">Type: {questionData.type}</label>
+        <div className="flex items-center gap-5">
+          <div className="flex items-center flex-col ">
+            <Uploadimage
+              onUpload={(url) =>
+                setQuestionData((prev) => ({
+                  ...prev,
+                  imageUrl: url,
+                }))
+              }
+              disable={disable}
+            />
+          </div>
+          {questionData.imageUrl && (
+            <div className="">
+              {isMobile ? (
+                <Drawer open={open}>
+                  <DrawerTrigger className="w-fit flex justify-end">
+                    <div className="bg-[#0F172B] p-2 rounded-lg text-zinc-50">
+                      PreviewImage
+                    </div>
+                  </DrawerTrigger>
+
+                  <DrawerContent className="flex flex-col h-[60dvh] w-screen p-0">
+                    <DrawerHeader className="shrink-0 p-4">
+                      <DrawerTitle>Image</DrawerTitle>
+                    </DrawerHeader>
+                    <Image
+                      height="60"
+                      width="300"
+                      src={questionData.imageUrl}
+                      alt="Uploaded"
+                      className="w-full h-96 object-contain rounded-lg"
+                    />
+                    <DrawerFooter className="flex items-center gap-5 w-full flex-row justify-around pb-10  ">
+                      <Button
+                        onClick={() => {
+                          setQuestionData((prev) => ({
+                            ...prev,
+                            imageUrl: "",
+                          }));
+                          setOpen(false);
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          setOpen(false);
+                        }}
+                      >
+                        Continue
+                      </Button>
+                    </DrawerFooter>
+                  </DrawerContent>
+                </Drawer>
+              ) : (
+                <Dialog open={open}>
+                  <DialogTrigger className="w-full flex justify-start">
+                    <div className="bg-[#0F172B] p-2 rounded-lg text-zinc-50">
+                      Preview Image
+                    </div>
+                  </DialogTrigger>
+                  <DialogContent className="flex flex-col h-4/5 overflow-hidden min-w-2xl ">
+                    <DialogHeader>
+                      <DialogTitle>Form Image</DialogTitle>
+                    </DialogHeader>
+
+                    <div className="flex-1 overflow-y-auto overflow-x-hidden">
+                      <Image
+                        height="60"
+                        width="300"
+                        src={questionData.imageUrl}
+                        alt="Uploaded"
+                        className="w-full h-96 object-contain rounded-lg"
+                      />
+                    </div>
+                    <DialogFooter className="flex items-center gap-5 w-48 justify-around">
+                      <Button
+                        onClick={() => {
+                          setQuestionData((prev) => ({
+                            ...prev,
+                            imageUrl: "",
+                          }));
+                          setOpen(false);
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          setOpen(false);
+                        }}
+                      >
+                        Continue
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
 
       <label className="flex flex-col gap-1.5 items-start w-full">
         Question
@@ -87,7 +211,8 @@ const Comprehension = ({ initialData, onSave }: QuestiondivProps) => {
           onChange={(e) =>
             setQuestionData((prev) => ({
               ...prev,
-              questionText: e.target.value || "Read The Para and Solve Given Questions",
+              questionText:
+                e.target.value || "Read The Para and Solve Given Questions",
             }))
           }
           required
@@ -169,7 +294,7 @@ const Comprehension = ({ initialData, onSave }: QuestiondivProps) => {
           </div>
         )}
       </div>
-      
+
       <Button className="w-full" onClick={handleSave}>
         Save Question
       </Button>

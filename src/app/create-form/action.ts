@@ -1,18 +1,22 @@
 import { QuestionsClient } from "@/types/ApiTypes";
 
-
-
 export interface FormData {
-  _id?:string
+  _id?: string;
   title: string;
   theme: { bg: string; color: string };
-  questions: QuestionsClient[]; 
+  questions: QuestionsClient[];
+  headerImage?: string;
 }
-export const createForm = async ({ title, questions, theme }: FormData) => {
+export const createForm = async ({
+  title,
+  questions,
+  theme,
+  headerImage,
+}: FormData) => {
   const res = await fetch("/api/createForm", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ title, questions, theme }),
+    body: JSON.stringify({ title, questions, theme, headerImage }),
   });
   await res.json();
 };
