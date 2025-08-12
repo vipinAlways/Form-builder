@@ -35,7 +35,7 @@ import {
 const Comprehension = ({ initialData, onSave, isMobile }: QuestiondivProps) => {
   const [newPara, setNewPara] = useState("");
   const [open, setOpen] = useState<boolean>(false);
-  const [disable, setDisable] = useState<boolean>(false);
+  
   const [newSubQText, setNewSubQText] = useState("");
   const [newOption, setNewOption] = useState("");
   const [currentOptions, setCurrentOptions] = useState<string[]>([]);
@@ -118,12 +118,10 @@ const Comprehension = ({ initialData, onSave, isMobile }: QuestiondivProps) => {
       },
     }));
 
-    
     setNewSubQText("");
     setCurrentOptions([]);
     setCorrectAnswer("");
   };
-
 
   const handleSave = () => {
     onSave(questionData);
@@ -151,7 +149,7 @@ const Comprehension = ({ initialData, onSave, isMobile }: QuestiondivProps) => {
                   imageUrl: url,
                 }))
               }
-              disable={disable}
+              disable={false}
             />
           </div>
           {questionData.imageUrl && (
@@ -242,7 +240,7 @@ const Comprehension = ({ initialData, onSave, isMobile }: QuestiondivProps) => {
             setQuestionData((prev) => ({
               ...prev,
               questionText:
-                e.target.value || "Read The Para and Solve Given Questions",
+                e.target.value ?? "Read The Para and Solve Given Questions",
             }))
           }
           required
@@ -271,18 +269,22 @@ const Comprehension = ({ initialData, onSave, isMobile }: QuestiondivProps) => {
       <div className="border-2 border-zinc-50 p-2 text-sm">
         {questionData.paraGraph?.para && (
           <DragDropContext onDragEnd={handleDragEnd}>
-            <Droppable droppableId="subQuestions">
+            <Droppable droppableId="subQuestions" direction="vertical">
               {(provided) => (
                 <div
                   {...provided.droppableProps}
                   ref={provided.innerRef}
                   className="space-y-2"
+                  style={{
+                    position: 'relative',
+                    overflow: 'visible'
+                  }}
                 >
                   {(questionData.paraGraph?.subQuestions || []).map(
                     (subQ, index) => (
                       <Draggable
-                        key={index}
-                        draggableId={`${index}`}
+                        key={`subquestion-${index}`}
+                        draggableId={`subquestion-${index}`}
                         index={index}
                       >
                         {(provided, snapshot) => (
@@ -290,30 +292,50 @@ const Comprehension = ({ initialData, onSave, isMobile }: QuestiondivProps) => {
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
-                            className={`p-3 border rounded bg-white w-full transition-shadow duration-200 ${
+                            className={`w-full p-3 border rounded-md bg-white shadow-sm transition-shadow ${
                               snapshot.isDragging
-                                ? "shadow-lg bg-indigo-50"
+                                ? "shadow-lg ring-2 ring-blue-500 ring-opacity-50 z-50"
                                 : ""
                             }`}
-                           
-                          >
-                            <div className="font-semibold mb-1">
-                              {subQ.questionText}
-                            </div>
-                            <ul className="list-disc list-inside mb-1">
-                              {subQ.options?.map((opt, idx) => (
-                                <li
-                                  key={idx}
-                                  className={
-                                    opt === subQ.correctAnswer
-                                      ? "font-bold text-green-600"
-                                      : ""
+                            style={{
+                              userSelect: 'none',
+                              ...(snapshot.isDragging 
+                                ? provided.draggableProps.style 
+                                : {
+                                    position: 'static',
+                                    left: 'unset',
+                                    top: 'unset',
+                                    right: 'unset',
+                                    bottom: 'unset',
+                                    transform: 'none',
+                                    zIndex: 'auto'
                                   }
-                                >
-                                  {opt}
-                                </li>
-                              ))}
-                            </ul>
+                              ),
+                              ...(snapshot.isDragging && {
+                                zIndex: 1000,
+                                pointerEvents: 'auto'
+                              })
+                            }}
+                          >
+                            <div className="flex flex-col gap-2">
+                              <div className="font-semibold text-gray-800">
+                                Q{index + 1}: {subQ.questionText}
+                              </div>
+                              <ul className="list-none space-y-1">
+                                {subQ.options?.map((opt, idx) => (
+                                  <li
+                                    key={idx}
+                                    className={`pl-4 py-1 rounded ${
+                                      opt === subQ.correctAnswer
+                                        ? "font-bold text-green-600 bg-green-50 border-l-4 border-green-500"
+                                        : "text-gray-700"
+                                    }`}
+                                  >
+                                    {String.fromCharCode(65 + idx)}. {opt}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
                           </div>
                         )}
                       </Draggable>
@@ -324,56 +346,78 @@ const Comprehension = ({ initialData, onSave, isMobile }: QuestiondivProps) => {
               )}
             </Droppable>
 
-            <label className="flex flex-col gap-1 mt-4">
-              Subquestion Text
-              <input
-                type="text"
-                value={newSubQText}
-                onChange={(e) => setNewSubQText(e.target.value)}
-                className="border rounded p-2"
-              />
-            </label>
-
-            <label className="flex flex-col gap-1 mt-2">
-              Add Option
-              <div className="flex gap-2">
+            <div className="mt-6 space-y-4 border-t pt-4">
+              <label className="flex flex-col gap-1">
+                <span className="font-medium">Subquestion Text</span>
                 <input
                   type="text"
-                  value={newOption}
-                  onChange={(e) => setNewOption(e.target.value)}
-                  className="border rounded p-2 flex-1"
+                  value={newSubQText}
+                  onChange={(e) => setNewSubQText(e.target.value)}
+                  className="border rounded p-2"
+                  placeholder="Enter your subquestion"
                 />
-                <Button
-                  onClick={() => {
-                    if (!newOption.trim()) return;
-                    setCurrentOptions((prev) => [...prev, newOption]);
-                    setNewOption("");
-                  }}
-                >
-                  Add
-                </Button>
-              </div>
-            </label>
+              </label>
 
-            <div className="mt-2 flex flex-col gap-1">
-              {currentOptions.map((opt, idx) => (
-                <div key={idx} className="flex items-center gap-2">
-                  <span>{opt}</span>
+              <label className="flex flex-col gap-1">
+                <span className="font-medium">Add Option</span>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={newOption}
+                    onChange={(e) => setNewOption(e.target.value)}
+                    className="border rounded p-2 flex-1"
+                    placeholder="Enter option text"
+                  />
                   <Button
-                    variant="outline"
-                    onClick={() =>
-                      setCorrectAnswer(opt === correctAnswer ? "" : opt)
-                    }
+                    onClick={() => {
+                      if (!newOption.trim()) return;
+                      setCurrentOptions((prev) => [...prev, newOption]);
+                      setNewOption("");
+                    }}
                   >
-                    {opt === correctAnswer ? "✅ Correct" : "Set Correct"}
+                    Add
                   </Button>
                 </div>
-              ))}
-            </div>
+              </label>
 
-            <Button className="w-full mt-4" onClick={handleAddSubQuestion}>
-              Add Subquestion
-            </Button>
+              {currentOptions.length > 0 && (
+                <div className="space-y-2">
+                  <span className="font-medium">Current Options:</span>
+                  {currentOptions.map((opt, idx) => (
+                    <div key={idx} className="flex items-center gap-3 p-2 bg-gray-50 rounded">
+                      <span className="flex-1">{String.fromCharCode(65 + idx)}. {opt}</span>
+                      <Button
+                        variant={opt === correctAnswer ? "default" : "outline"}
+                        size="sm"
+                        onClick={() =>
+                          setCorrectAnswer(opt === correctAnswer ? "" : opt)
+                        }
+                      >
+                        {opt === correctAnswer ? "✅ Correct" : "Set Correct"}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setCurrentOptions(prev => prev.filter((_, i) => i !== idx));
+                          if (opt === correctAnswer) setCorrectAnswer("");
+                        }}
+                      >
+                        Remove
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <Button 
+                className="w-full" 
+                onClick={handleAddSubQuestion}
+                disabled={!newSubQText.trim() || currentOptions.length === 0 || !correctAnswer}
+              >
+                Add Subquestion
+              </Button>
+            </div>
           </DragDropContext>
         )}
       </div>

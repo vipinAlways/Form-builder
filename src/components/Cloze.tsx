@@ -35,7 +35,7 @@ const Cloze = ({ initialData, onSave, isMobile }: QuestiondivProps) => {
     initialData || emptyQuestion
   );
   const [open, setOpen] = useState<boolean>();
-  const [disable, setDisable] = useState<boolean>(false);
+  
 
   const handleSave = () => {
     onSave(questionData);
@@ -70,7 +70,7 @@ const Cloze = ({ initialData, onSave, isMobile }: QuestiondivProps) => {
                     imageUrl: url,
                   }))
                 }
-                disable={disable}
+                disable={false}
               />
             </div>
             {questionData.imageUrl && (

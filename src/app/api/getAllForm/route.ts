@@ -3,7 +3,6 @@ import { authOptions } from "@/lib/auth";
 import db from "@/lib/db";
 import { FormModel } from "@/models/Form";
 import { UserModel } from "@/models/User";
-import { FormSchema } from "@/types/SchemaTypes";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
@@ -23,9 +22,7 @@ export const GET = async () => {
 
     const forms = await FormModel.find({ user: user._id });
 
-    if (forms.length === 0) {
-      return NextResponse.json({ message: "No forms found" }, { status: 404 });
-    }
+   
 
     return NextResponse.json(
       {

@@ -1,11 +1,5 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { SidebarTrigger } from "@/components/ui/sidebar";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { useQuery } from "@tanstack/react-query";
-import { signOut, useSession } from "next-auth/react";
-import Image from "next/image";
-import { redirect } from "next/navigation";
 import React from "react";
 import { FormData } from "./create-form/action";
 import { userDetails } from "./actions/user.action";
@@ -20,13 +14,12 @@ interface Details {
   createdForms: FormData[];
   SubmittedForms: FormData[];
 }
-const page = () => {
-  const isMobile = useIsMobile();
+const Page = () => {
   const { data, isPending } = useQuery<Details>({
     queryKey: ["user-details"],
     queryFn: userDetails,
   });
-  console.log(data);
+  
 
   if (isPending) return <Loader2 className="animate-spin size-6" />;
   return (
@@ -43,11 +36,11 @@ const page = () => {
           <div className="flex flex-col gap-1.5  w-96 border p-2 rounded-lg ">
             <h1 className="border-b text-xl font-semibold">Created Forms</h1>
             <ul className="h-48 overflow-y-auto p-1.5">
-              {data?.createdForms.map((form, index) => (
+              {data?.createdForms.map((form) => (
                 <li key={form._id} className="border-b">
                   <Link href={`/form/${form._id}`}>
                     <span className="text-lg">{form.title}</span>
-                    {/* <p>{form.description}</p> */}
+                  
                   </Link>
                 </li>
               ))}
@@ -56,7 +49,7 @@ const page = () => {
           <div className="flex flex-col gap-1.5  w-96 border p-2 rounded-lg ">
             <h1 className="border-b text-xl font-semibold">Created Forms</h1>
             <ul className="h-48 overflow-y-auto p-1.5">
-              {data?.SubmittedForms.map((form, index) => (
+              {data?.SubmittedForms.map((form) => (
                 <li key={form._id} className="border-b">
                   <Link href={`/form/${form._id}`}>
                     <span className="text-lg">{form.title}</span>
@@ -74,4 +67,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

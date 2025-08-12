@@ -1,11 +1,7 @@
 import React from "react";
 import Link from "next/link";
-interface Props {
-  params: Promise<{ formId: string }>;
-}
-const page = async ({ params }: Props) => {
-  const { formId } = await params;
 
+const page = () => {
   return (
     <div className="flex items-center justify-center w-full h-full">
       <div className="flex flex-col items-center gap-1.5 border-2 rounded-lg p-3">

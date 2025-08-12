@@ -1,7 +1,5 @@
 import { emptyQuestion, QuestionsClient } from "@/types/ApiTypes";
-import React, { useState, useEffect } from "react";
-import { Button } from "./ui/button";
-import { X } from "lucide-react";
+import React, { useState } from "react";
 import Categroirze from "./Categroirze";
 import Cloze from "./Cloze";
 import Comprehension from "./Comprehension";

@@ -1,5 +1,5 @@
 import { UserSchema } from "@/types/SchemaTypes";
-import mongoose, { Schema, Model } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const userSchema:Schema<UserSchema> = new Schema({
   name: { type: String, required: true },

@@ -1,8 +1,6 @@
-
-
 // Client-side TypeScript interface
 export interface QuestionsClient {
-  _id?:string
+  _id?: string;
   type: "categorize" | "cloze" | "comprehension" | string;
   questionText: string;
   imageUrl?: string;
@@ -15,13 +13,13 @@ export interface QuestionsClient {
     }>;
   };
   blanks?: {
-    blankQuestion:string
+    blankQuestion: string;
     option: string[];
     answer: Array<{
       position: number;
       text: string;
     }>;
-    question:string
+    question: string;
   };
   paraGraph?: {
     para: string;
@@ -44,10 +42,10 @@ export const emptyQuestion: QuestionsClient = {
     items: [],
   },
   blanks: {
-    blankQuestion:"",
+    blankQuestion: "",
     answer: [],
     option: [],
-    question:""
+    question: "",
   },
   paraGraph: {
     para: "",
@@ -56,7 +54,6 @@ export const emptyQuestion: QuestionsClient = {
   options: [],
 };
 // Mongoose document type (for server-side usage)
-
 
 export interface ComprehensionAnswer {
   answer: string; // selected option
@@ -72,6 +69,21 @@ export interface ClozeAnswer {
 }
 
 export type StudentAnswer =
-  | { questionId: string; type: "comprehension"; answer: ComprehensionAnswer }
-  | { questionId: string; type: "categorize"; answer: CategoryAnswer[] }
-  | { questionId: string; type: "cloze"; answer: ClozeAnswer };
+  | {
+      questionId: string;
+      type: "comprehension";
+      answer: ComprehensionAnswer;
+      
+    }
+  | {
+      questionId: string;
+      type: "categorize";
+      answer: CategoryAnswer[];
+      
+    }
+  | {
+      questionId: string;
+      type: "cloze";
+      answer: ClozeAnswer;
+      
+    };

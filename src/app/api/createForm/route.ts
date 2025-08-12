@@ -20,7 +20,7 @@ export async function POST(req: Request) {
       email: session?.user?.email,
     });
     if (!title) {
-      return NextResponse.json({ message: "Title  required" }, { status: 400 });
+      throw new Error("Title  required");
     }
     if (!user) {
       return NextResponse.json(
@@ -58,7 +58,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json(
       { message: "Form created successfully", form: newForm },
-      { status: 201 }
+      { status: 200 }
     );
   } catch (error) {
     console.error("Error creating form with questions:", error);

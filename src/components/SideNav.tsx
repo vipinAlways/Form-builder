@@ -9,14 +9,10 @@ import {
   SidebarHeader,
   SidebarMenu,
 } from "./ui/sidebar";
-
 import Image from "next/image";
 import Link from "next/link";
-import { useQuery } from "@tanstack/react-query";
-
 import { signOut, useSession } from "next-auth/react";
 import { Button } from "./ui/button";
-
 import { LibraryIcon, LucideCreativeCommons } from "lucide-react";
 
 const SideNav = () => {

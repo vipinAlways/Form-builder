@@ -1,11 +1,29 @@
+import {
+  CategoryAnswer,
+  ClozeAnswer,
+  ComprehensionAnswer,
+} from "@/types/ApiTypes";
 import mongoose, { Schema, Document } from "mongoose";
 
-export interface StudentAnswer {
-  questionId: string;
-  type: string;
-  answer: any;
-  isCorrect: boolean;
-}
+export type StudentAnswer =
+  | {
+      questionId: string;
+      type: "comprehension";
+      answer: ComprehensionAnswer;
+      isCorrect: boolean;
+    }
+  | {
+      questionId: string;
+      type: "categorize";
+      answer: CategoryAnswer[];
+      isCorrect: boolean;
+    }
+  | {
+      questionId: string;
+      type: "cloze";
+      answer: ClozeAnswer;
+      isCorrect: boolean;
+    };
 
 export interface StudentSubmission extends Document {
   formId: mongoose.Types.ObjectId;

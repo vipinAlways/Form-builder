@@ -7,8 +7,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import db from "@/lib/db";
 import { QuestionsClient, StudentAnswer } from "@/types/ApiTypes";
-import { FormData } from "@/app/create-form/action";
-import { FormSchema } from "@/types/SchemaTypes";
+
 
 export async function POST(req: NextRequest) {
   await db();

@@ -7,7 +7,6 @@ import Uploadimage from "./Uploadimage";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -15,9 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
-  DrawerDescription,
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
@@ -30,6 +27,7 @@ import {
   Droppable,
   DropResult,
 } from "@hello-pangea/dnd";
+
 const Categroirze = ({ initialData, onSave, isMobile }: QuestiondivProps) => {
   const [newBelongs, setNewBelongs] = useState<string>("");
   const [disable, setDisable] = useState<boolean>(false);
@@ -68,14 +66,15 @@ const Categroirze = ({ initialData, onSave, isMobile }: QuestiondivProps) => {
   }, [initialData]);
   useEffect(() => {
     setDisable(questionData.imageUrl !== "");
-  }, [initialData]);
+  }, [initialData,questionData.imageUrl]);
+
   return (
-    <div className="border w-full    flex flex-col  gap-4">
-      <div className="w-full flex  md:text-lg text-sm flex-col max-md:items-start font-semibold gap-3 p-2">
+    <div className="border w-full flex flex-col gap-4">
+      <div className="w-full flex md:text-lg text-sm flex-col max-md:items-start font-semibold gap-3 p-2">
         <div className="flex max-md:flex-col items-center sm:justify-between">
           <label htmlFor="Questiontype">Type: {questionData.type}</label>
           <div className="flex items-center gap-5">
-            <div className="flex items-center flex-col ">
+            <div className="flex items-center flex-col">
               <Uploadimage
                 onUpload={(url) =>
                   setQuestionData((prev) => ({
@@ -107,7 +106,7 @@ const Categroirze = ({ initialData, onSave, isMobile }: QuestiondivProps) => {
                         alt="Uploaded"
                         className="w-full h-96 object-contain rounded-lg"
                       />
-                      <DrawerFooter className="flex items-center gap-5 w-full flex-row justify-around pb-10  ">
+                      <DrawerFooter className="flex items-center gap-5 w-full flex-row justify-around pb-10">
                         <Button
                           onClick={() => {
                             setQuestionData((prev) => ({
@@ -136,7 +135,7 @@ const Categroirze = ({ initialData, onSave, isMobile }: QuestiondivProps) => {
                         Preview Image
                       </div>
                     </DialogTrigger>
-                    <DialogContent className="flex flex-col h-4/5 overflow-hidden min-w-2xl ">
+                    <DialogContent className="flex flex-col h-4/5 overflow-hidden min-w-2xl">
                       <DialogHeader>
                         <DialogTitle>Form Image</DialogTitle>
                       </DialogHeader>
@@ -192,12 +191,12 @@ const Categroirze = ({ initialData, onSave, isMobile }: QuestiondivProps) => {
               }))
             }
             required
-            className="w-full outline outline-black rounded-lg p-2 md:h-11 h-16"
-            placeholder="Enter Question "
+            className="w-full outline outline-black rounded-lg p-2 min-h-16"
+            placeholder="Enter Question"
           />
         </label>
 
-        <div className="flex flex-col gap-6 ">
+        <div className="flex flex-col gap-6">
           <div className="flex flex-col gap-2">
             <label className="font-semibold md:text-xl text-lg">
               Add Belongies
@@ -264,7 +263,7 @@ const Categroirze = ({ initialData, onSave, isMobile }: QuestiondivProps) => {
           </div>
 
           <div className="flex flex-col gap-4 text-sm">
-            <div className=" rounded-lg">
+            <div className="rounded-lg">
               <div className="flex gap-2 mt-2 max-sm:flex-col">
                 <input
                   type="text"
@@ -322,40 +321,54 @@ const Categroirze = ({ initialData, onSave, isMobile }: QuestiondivProps) => {
               </div>
             </div>
 
-            <DragDropContext onDragEnd={handleDragEnd}>
-              <Droppable droppableId="categorizeOptions" direction="vertical">
-                {(provided) => (
-                  <ul
-                    className="list-disc list-inside text-lg w-full relative"
-                    {...provided.droppableProps}
-                    ref={provided.innerRef}
-                  >
-                    {questionData.categorizeOptions?.asnwer.map(
-                      (ans, index) => (
-                        <Draggable
-                          key={ans.text}
-                          draggableId={ans.text}
-                          index={index}
-                        >
-                          {(provided) => (
-                            <li
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                              className="draggable-item p-2 border rounded bg-white"
-                            >
-                              <span>{ans.text}</span> <span>{ans.belongs}</span>
-                            </li>
-                          )}
-                        </Draggable>
-                      )
-                    )}
-
-                    {provided.placeholder}
-                  </ul>
-                )}
-              </Droppable>
-            </DragDropContext>
+            <div className="w-full relative p-2">
+              <DragDropContext onDragEnd={handleDragEnd}>
+                <Droppable droppableId="categorizeOptions" direction="vertical">
+                  {(provided) => (
+                    <div
+                      className="w-full   flex flex-col gap-1.5 p-2  relative"
+                      {...provided.droppableProps}
+                      ref={provided.innerRef}
+                    >
+                      {questionData.categorizeOptions?.asnwer.map(
+                        (ans, index) => (
+                          <Draggable
+                            key={`${ans.text}-${index}`}
+                            draggableId={`${ans.text}-${index}`}
+                            index={index}
+                          >
+                            {(provided, snapshot) => (
+                              <div
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                className={`w-full p-3 border rounded-md bg-white shadow-sm flex justify-between items-center relative   ${
+                                  snapshot.isDragging ? 'shadow-lg ring-2 ring-blue-500 ring-opacity-50' : ''
+                                }`}
+                                style={{
+                                  ...provided.draggableProps.style,
+                                  left: 'auto !important',
+                                  top: 'auto !important',
+                                  right: 'auto !important',
+                                  bottom: 'auto !important',
+                                  
+                                }}
+                              >
+                                <span className="text-sm font-medium">{ans.text}</span>
+                                <span className="text-xs bg-gray-100 px-2 py-1 rounded text-gray-600">
+                                  {ans.belongs}
+                                </span>
+                              </div>
+                            )}
+                          </Draggable>
+                        )
+                      )}
+                      {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
+              </DragDropContext>
+            </div>
           </div>
         </div>
 

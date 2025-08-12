@@ -4,23 +4,18 @@ import React from "react";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
+    
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { Loader2Icon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface QuestionsListProps {
@@ -39,9 +34,9 @@ export function QuestionsList({ questions, isMobile }: QuestionsListProps) {
             <div className="flex items-start max-md:flex-col gap-2 justify-between  w-full">
               <span className="font-bold">Question {i + 1}.</span>
               <div className="flex-1">
-                <h1 className="flex p-2 rounded-lg font-semibold border">
+                <h1 className="flex p-2 rounded-lg font-semibold ">
                   <span className="w-2/3 text-wrap text-start">
-                    {q.questionText}
+                    {q.questionText ? q.questionText : "Solve Given Questions"}
                   </span>{" "}
                   <span className="w-1/3"> Types : {q.type}</span>
                 </h1>

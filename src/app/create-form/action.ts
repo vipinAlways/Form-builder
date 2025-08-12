@@ -6,7 +6,7 @@ export interface FormData {
   theme: { bg: string; color: string };
   questions: QuestionsClient[];
   headerImage?: string;
-  submission?:string[]
+  submission?: string[];
 }
 export const createForm = async ({
   title,
@@ -14,10 +14,15 @@ export const createForm = async ({
   theme,
   headerImage,
 }: FormData) => {
-  const res = await fetch("/api/createForm", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ title, questions, theme, headerImage }),
-  });
-  await res.json();
+  try {
+    const res = await fetch("/api/createForm", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title, questions, theme, headerImage }),
+    });
+
+    await res.json();
+  } catch (error) {
+    throw new Error("Server Issue" + error);
+  }
 };
