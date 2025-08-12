@@ -15,11 +15,11 @@ const formSchema:Schema<FormSchema> = new Schema({
     ref: "users",
     require:true
   },
-  submission:{
+  submission:[{
      type: mongoose.Schema.Types.ObjectId,
     ref: "submissions",
     require:true
-  }
+  }]
 });
 
 export const FormModel = mongoose.models.forms || mongoose.model<FormSchema>("forms", formSchema);

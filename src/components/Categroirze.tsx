@@ -50,15 +50,15 @@ const Categroirze = ({ initialData, onSave, isMobile }: QuestiondivProps) => {
   const handleDragEnd = (result: DropResult) => {
     if (!result.destination) return;
 
-    const items = Array.from(questionData.blanks?.answer || []);
+    const items = Array.from(questionData.categorizeOptions?.asnwer || []);
     const [reordered] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reordered);
 
     setQuestionData((prev) => ({
       ...prev,
-      blanks: {
-        ...(prev.blanks || { option: [], blankQuestion: "", question: "" }),
-        answer: items,
+      categorizeOptions: {
+        ...(prev.categorizeOptions || { items: [], Belongs: [], asnwer: [] }),
+        asnwer: items,
       },
     }));
   };
@@ -70,7 +70,7 @@ const Categroirze = ({ initialData, onSave, isMobile }: QuestiondivProps) => {
     setDisable(questionData.imageUrl !== "");
   }, [initialData]);
   return (
-    <div className="border w-full   flex flex-col  gap-4">
+    <div className="border w-full    flex flex-col  gap-4">
       <div className="w-full flex  md:text-lg text-sm flex-col max-md:items-start font-semibold gap-3 p-2">
         <div className="flex max-md:flex-col items-center sm:justify-between">
           <label htmlFor="Questiontype">Type: {questionData.type}</label>
@@ -197,7 +197,7 @@ const Categroirze = ({ initialData, onSave, isMobile }: QuestiondivProps) => {
           />
         </label>
 
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6 ">
           <div className="flex flex-col gap-2">
             <label className="font-semibold md:text-xl text-lg">
               Add Belongies
@@ -323,34 +323,26 @@ const Categroirze = ({ initialData, onSave, isMobile }: QuestiondivProps) => {
             </div>
 
             <DragDropContext onDragEnd={handleDragEnd}>
-              <Droppable droppableId="categorizeOptions">
+              <Droppable droppableId="categorizeOptions" direction="vertical">
                 {(provided) => (
                   <ul
-                    className="list-disc list-inside text-lg"
+                    className="list-disc list-inside text-lg w-full relative"
                     {...provided.droppableProps}
                     ref={provided.innerRef}
                   >
                     {questionData.categorizeOptions?.asnwer.map(
                       (ans, index) => (
                         <Draggable
-                          key={index}
-                          draggableId={`answer-${index}`}
+                          key={ans.text}
+                          draggableId={ans.text}
                           index={index}
                         >
-                          {(provided, snapshot) => (
+                          {(provided) => (
                             <li
                               ref={provided.innerRef}
                               {...provided.draggableProps}
                               {...provided.dragHandleProps}
-                              className={`p-2 border rounded bg-white transition-shadow ${
-                                snapshot.isDragging
-                                  ? "shadow-lg bg-indigo-50"
-                                  : ""
-                              }`}
-                              style={{
-                                ...provided.draggableProps.style,
-                                userSelect: "none",
-                              }}
+                              className="draggable-item p-2 border rounded bg-white"
                             >
                               <span>{ans.text}</span> <span>{ans.belongs}</span>
                             </li>
@@ -358,6 +350,7 @@ const Categroirze = ({ initialData, onSave, isMobile }: QuestiondivProps) => {
                         </Draggable>
                       )
                     )}
+
                     {provided.placeholder}
                   </ul>
                 )}

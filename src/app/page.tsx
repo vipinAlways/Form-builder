@@ -2,37 +2,74 @@
 import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useQuery } from "@tanstack/react-query";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import React from "react";
+import { FormData } from "./create-form/action";
+import { userDetails } from "./actions/user.action";
+import { Loader2 } from "lucide-react";
+import Link from "next/link";
 
+interface Details {
+  user: {
+    name: string;
+    email: string;
+  };
+  createdForms: FormData[];
+  SubmittedForms: FormData[];
+}
 const page = () => {
-  const session = useSession();
   const isMobile = useIsMobile();
-  if (!session || !session.data?.user || !session.data.user?.image) return null;
-  return (
-    <div className="p-4">
-      
-      <div className="flex items-start gap-3 flex-col">
-        <h1 className="sm:text-5xl font-bold">Hello,</h1>
-        <div className="font-semibold sm:text-5xl flex items-center gap-4">
-          {/* <Image
-            src={session.data?.user?.image}
-            alt="useriamge"
-            height={isMobile ? 30 : 60}
-            width={isMobile ? 30 : 60}
-            className="rounded-full object-cover"
-          /> */}
-          <h1>{session.data?.user?.name}</h1>
+  const { data, isPending } = useQuery<Details>({
+    queryKey: ["user-details"],
+    queryFn: userDetails,
+  });
+  console.log(data);
 
-          <p></p>
+  if (isPending) return <Loader2 className="animate-spin size-6" />;
+  return (
+    <div className="p-4 h-full">
+      <div className="flex items-start flex-col gap-10 md:gap-14 h-full">
+        <div className="font-semibold sm:text-5xl flex gap-4 flex-col">
+          <h1 className="sm:text-5xl font-bold">Hello,</h1>
+          <h1 className="flex flex-col gap-1">
+            {data?.user?.name} <p>Enjoy Your Day</p>
+          </h1>
+        </div>
+
+        <div className="justify-around w-full gap-5 flex ">
+          <div className="flex flex-col gap-1.5  w-96 border p-2 rounded-lg ">
+            <h1 className="border-b text-xl font-semibold">Created Forms</h1>
+            <ul className="h-48 overflow-y-auto p-1.5">
+              {data?.createdForms.map((form, index) => (
+                <li key={form._id} className="border-b">
+                  <Link href={`/form/${form._id}`}>
+                    <span className="text-lg">{form.title}</span>
+                    {/* <p>{form.description}</p> */}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="flex flex-col gap-1.5  w-96 border p-2 rounded-lg ">
+            <h1 className="border-b text-xl font-semibold">Created Forms</h1>
+            <ul className="h-48 overflow-y-auto p-1.5">
+              {data?.SubmittedForms.map((form, index) => (
+                <li key={form._id} className="border-b">
+                  <Link href={`/form/${form._id}`}>
+                    <span className="text-lg">{form.title}</span>
+                    {/* <p>{form.description}</p> */}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
 
-      <div>
-        
-      </div>
+      <div></div>
     </div>
   );
 };

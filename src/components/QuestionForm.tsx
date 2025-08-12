@@ -18,8 +18,8 @@ export function QuestionForm({ initialData, onSave }: QuestiondivProps) {
   const [type, setTypes] = useState<string>("");
 
   return (
-    <div className="border  flex flex-col  gap-4 justify-center items-center min-h-full">
-      <div className="w-full flex  md:text-lg text-sm flex-col  items-center justify-center h-full font-semibold gap-3 p-2">
+    <div className="border  flex flex-col  gap-4 justify-center items-center min-h-full relative">
+      <div className="w-full flex  md:text-lg text-sm flex-col  items-center justify-center h-full font-semibold gap-3 p-2 relative">
         <label htmlFor="Questiontype" className="flex items-center gap-1.5">
           Type:
           <select

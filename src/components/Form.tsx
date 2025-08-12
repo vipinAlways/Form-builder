@@ -11,6 +11,7 @@ interface Props {
 interface dataProps {
   formDetails :FormData,
   questions:QuestionsClient[]
+  isSubmitted:boolean
 }
 
 const Form = ({ id }: Props) => {
@@ -21,7 +22,7 @@ const Form = ({ id }: Props) => {
   console.log(data);
 
   if (!data) return <div>no </div>;
-  return <FormRender questions={data.questions} formId={id}  formDetails={data.formDetails}/>
+  return <FormRender questions={data.questions} formId={id}  isSubmitted={data.isSubmitted} formDetails={data.formDetails}/>
 };
 
 export default Form;

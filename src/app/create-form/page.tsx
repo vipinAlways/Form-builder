@@ -269,7 +269,7 @@ const Page = () => {
                         </DialogDescription>
                       </DialogHeader>
 
-                      <div className="flex-1 overflow-y-scroll h-full overflow-x-hidden w-full">
+                      <div className="flex-1 overflow-y-scroll h-full overflow-x-hidden w-full relative">
                         <QuestionForm
                           initialData={selectedQuestion}
                           onSave={handleSaveQuestion}
@@ -285,27 +285,27 @@ const Page = () => {
             </div>
           </div>
         </div>
-          
-       <div>
-         {questions.length !== 0 &&
-          (render === "create" ? (
-            <div className="w-full flex items-center justify-around">
-              <Link
-                href={"/"}
-                className="rounded-md bg-zinc-500/80 hover:bg-zinc-500 py-1.5 px-2 "
-              >
-                Cancel
-              </Link>
-              <Button onClick={handleRender}>Preview</Button>
-            </div>
-          ) : render === "loading" ? (
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-bold text-2xl">
-              Wait It Will tak a whil
-            </div>
-          ) : (
-            <Button type="submit">Save Form</Button>
-          ))}
-       </div>
+
+        <div>
+          {questions.length !== 0 &&
+            (render === "create" ? (
+              <div className="w-full flex items-center justify-around">
+                <Link
+                  href={"/"}
+                  className="rounded-md bg-zinc-500/80 hover:bg-zinc-500 py-1.5 px-2 "
+                >
+                  Cancel
+                </Link>
+                <Button onClick={handleRender}>Preview</Button>
+              </div>
+            ) : render === "loading" ? (
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-bold text-2xl">
+                Wait It Will tak a whil
+              </div>
+            ) : (
+              <Button type="submit">Save Form</Button>
+            ))}
+        </div>
       </form>
     </div>
   );

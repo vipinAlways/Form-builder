@@ -6,6 +6,7 @@ export interface FormData {
   theme: { bg: string; color: string };
   questions: QuestionsClient[];
   headerImage?: string;
+  submission?:string[]
 }
 export const createForm = async ({
   title,

@@ -18,9 +18,11 @@ interface Props {
   formDetails: FormData;
   questions: QuestionsClient[];
   formId: string;
+  isSubmitted: boolean;
 }
 
-function FormRender({ formDetails, questions, formId }: Props) {
+function FormRender({ formDetails, questions, formId, isSubmitted }: Props) {
+
   const [studentAnswers, setStudentAnswers] = useState<StudentAnswer[]>([]);
 
   const [itemsState, setItemsState] = useState(() =>
@@ -45,7 +47,7 @@ function FormRender({ formDetails, questions, formId }: Props) {
     mutationFn: submitAnswer,
     onSuccess: () => {
       toast.success("Submission successful");
-      redirect(`/form/success/${formId}`)
+      redirect(`/form/success/${formId}`);
     },
     onError: (error: Error) => toast.error(error.message),
   });
@@ -115,7 +117,7 @@ function FormRender({ formDetails, questions, formId }: Props) {
           <div key={ques._id ?? `local-${index}`} className="flex gap-2">
             <span>Ques. {index + 1}</span>
 
-            {/* Comprehension */}
+            
             {ques.type === "comprehension" && (
               <div className="flex flex-col gap-1.5">
                 <h1 className="font-semibold">{ques.questionText}</h1>
@@ -179,7 +181,7 @@ function FormRender({ formDetails, questions, formId }: Props) {
                 </ul>
               </div>
             )}
-            {/* Categorize */}
+            
             {ques.type === "categorize" && (
               <div className="flex flex-col gap-1.5">
                 <h1 className="font-semibold">{ques.questionText}</h1>
@@ -233,7 +235,7 @@ function FormRender({ formDetails, questions, formId }: Props) {
                     >
                       {(provided) => (
                         <div
-                          className="h-72 flex flex-col gap-0.5 border-4 w-36 text-center rounded-lg"
+                          className="h-72 flex flex-col gap-0.5 border-4 flex-1  text-center rounded-lg"
                           ref={provided.innerRef}
                           {...provided.droppableProps}
                         >
@@ -263,7 +265,7 @@ function FormRender({ formDetails, questions, formId }: Props) {
               </div>
             )}
 
-            {/* Cloze */}
+            
             {ques.type === "cloze" && (
               <div className="flex flex-col gap-1.5">
                 <h1 className="font-semibold">{ques.questionText}</h1>
@@ -295,7 +297,7 @@ function FormRender({ formDetails, questions, formId }: Props) {
                                 ref={provided.innerRef}
                                 {...provided.draggableProps}
                                 {...provided.dragHandleProps}
-                                className="p-2 bg-green-500 text-white rounded-lg"
+                                className="p-2 bg-green-500 text-white rounded-lg text-wrap  break-words"
                               >
                                 {item}
                               </span>
@@ -308,8 +310,8 @@ function FormRender({ formDetails, questions, formId }: Props) {
                   )}
                 </Droppable>
 
-                {/* Blank */}
-                <span className="text-lg font-semibold p-3 border rounded-lg flex items-center gap-2">
+               
+                <span className="text-lg font-semibold p-3 border rounded-lg flex flex-wrap items-center gap-2">
                   {ques.blanks?.blankQuestion.split("___")[0]}
                   <Droppable
                     droppableId={`${ques._id ?? `local-${index}`}|blank`}
@@ -348,11 +350,15 @@ function FormRender({ formDetails, questions, formId }: Props) {
           </div>
         ))}
       </DragDropContext>
-      <Button
-        onClick={() => mutation.mutate({ formId, answers: studentAnswers })}
-      >
-        Save
-      </Button>
+      {isSubmitted ? (
+        <p className="text-center font-semibold ">You Submitted the forms Result is in Process</p>
+      ) : (
+        <Button
+          onClick={() => mutation.mutate({ formId, answers: studentAnswers })}
+        >
+          Save
+        </Button>
+      )}
     </div>
   );
 }
