@@ -1,32 +1,38 @@
-import { SubmissionSchema } from "@/types/SchemaTypes";
-import mongoose, { Schema, Model } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 
-const submissionSchema = new Schema<SubmissionSchema>({
-  form: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "forms",
-    require: true,
+export interface StudentAnswer {
+  questionId: string;
+  type: string;
+  answer: any;
+  isCorrect: boolean;
+}
+
+export interface StudentSubmission extends Document {
+  formId: mongoose.Types.ObjectId;
+  studentId?: mongoose.Types.ObjectId;
+  answers: StudentAnswer[];
+  score: number;
+  submittedAt: Date;
+}
+
+const StudentAnswerSchema = new Schema<StudentAnswer>(
+  {
+    questionId: { type: String, required: true },
+    type: { type: String, required: true },
+    answer: { type: Schema.Types.Mixed, required: true },
+    isCorrect: { type: Boolean, required: true },
   },
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "users",
-    require: true,
-  },
-  answers: [
-    {
-      question: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "questions",
-        required: true,
-      },
-      answer: { type: String, required: true },
-    },
-  ],
-  submittedAt: {
-    type: Date,
-    default: Date.now,
-  },
+  { _id: false }
+);
+
+const StudentSubmissionSchema = new Schema<StudentSubmission>({
+  formId: { type: Schema.Types.ObjectId, ref: "Form", required: true },
+  studentId: { type: Schema.Types.ObjectId, ref: "User" },
+  answers: { type: [StudentAnswerSchema], required: true },
+  score: { type: Number, required: true },
+  submittedAt: { type: Date, default: Date.now },
 });
 
-
-export const submissionModel =  mongoose.models.submissions || mongoose.model<SubmissionSchema>("submissions", submissionSchema)
+export const SubmitssionModel =
+  mongoose.models.submissions ||
+  mongoose.model<StudentSubmission>("submissions", StudentSubmissionSchema);

@@ -6,6 +6,7 @@ const userSchema:Schema<UserSchema> = new Schema({
   email: { type: String, required: true, unique: true },
   image:{type:String},
   forms: [{ type: Schema.Types.ObjectId, ref: "forms" }],
+  submittedForms :[{ type: Schema.Types.ObjectId, ref: "forms" }]
 });
 
 export const UserModel =  mongoose.models.users || mongoose.model<UserSchema>("users", userSchema);

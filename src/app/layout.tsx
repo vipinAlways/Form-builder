@@ -29,7 +29,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased w-full min-h-screen`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased w-full min-h-screen font-serif`}
       >
         <Provider>
           <main className="w-full min-h-screen">

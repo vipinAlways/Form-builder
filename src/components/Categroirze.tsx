@@ -24,6 +24,12 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import Image from "next/image";
+import {
+  DragDropContext,
+  Draggable,
+  Droppable,
+  DropResult,
+} from "@hello-pangea/dnd";
 const Categroirze = ({ initialData, onSave, isMobile }: QuestiondivProps) => {
   const [newBelongs, setNewBelongs] = useState<string>("");
   const [disable, setDisable] = useState<boolean>(false);
@@ -40,6 +46,23 @@ const Categroirze = ({ initialData, onSave, isMobile }: QuestiondivProps) => {
     setQuestionData(emptyQuestion);
     onSave(questionData);
   };
+
+  const handleDragEnd = (result: DropResult) => {
+    if (!result.destination) return;
+
+    const items = Array.from(questionData.blanks?.answer || []);
+    const [reordered] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reordered);
+
+    setQuestionData((prev) => ({
+      ...prev,
+      blanks: {
+        ...(prev.blanks || { option: [], blankQuestion: "", question: "" }),
+        answer: items,
+      },
+    }));
+  };
+
   useEffect(() => {
     setQuestionData((prev) => ({ ...prev, type: "categorize" }));
   }, [initialData]);
@@ -299,13 +322,47 @@ const Categroirze = ({ initialData, onSave, isMobile }: QuestiondivProps) => {
               </div>
             </div>
 
-            <ul className="list-disc list-inside text-lg ">
-              {questionData.categorizeOptions?.asnwer.map((ans, index) => (
-                <li key={index}>
-                  <span>{ans.text}</span> <span>{ans.belongs}</span>
-                </li>
-              ))}
-            </ul>
+            <DragDropContext onDragEnd={handleDragEnd}>
+              <Droppable droppableId="categorizeOptions">
+                {(provided) => (
+                  <ul
+                    className="list-disc list-inside text-lg"
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                  >
+                    {questionData.categorizeOptions?.asnwer.map(
+                      (ans, index) => (
+                        <Draggable
+                          key={index}
+                          draggableId={`answer-${index}`}
+                          index={index}
+                        >
+                          {(provided, snapshot) => (
+                            <li
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              className={`p-2 border rounded bg-white transition-shadow ${
+                                snapshot.isDragging
+                                  ? "shadow-lg bg-indigo-50"
+                                  : ""
+                              }`}
+                              style={{
+                                ...provided.draggableProps.style,
+                                userSelect: "none",
+                              }}
+                            >
+                              <span>{ans.text}</span> <span>{ans.belongs}</span>
+                            </li>
+                          )}
+                        </Draggable>
+                      )
+                    )}
+                    {provided.placeholder}
+                  </ul>
+                )}
+              </Droppable>
+            </DragDropContext>
           </div>
         </div>
 

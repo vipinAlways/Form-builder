@@ -46,7 +46,6 @@ const Comprehension = ({ initialData, onSave, isMobile }: QuestiondivProps) => {
 
   const havePara = !!questionData.paraGraph?.para;
 
-  // Reorder subQuestions on drag end
   const handleDragEnd = (result: DropResult) => {
     if (!result.destination) return;
 
@@ -119,13 +118,13 @@ const Comprehension = ({ initialData, onSave, isMobile }: QuestiondivProps) => {
       },
     }));
 
-    // reset subquestion form
+    
     setNewSubQText("");
     setCurrentOptions([]);
     setCorrectAnswer("");
   };
 
-  // Save entire question
+
   const handleSave = () => {
     onSave(questionData);
     setQuestionData(emptyQuestion);
@@ -286,12 +285,17 @@ const Comprehension = ({ initialData, onSave, isMobile }: QuestiondivProps) => {
                         draggableId={`${index}`}
                         index={index}
                       >
-                        {(provided) => (
+                        {(provided, snapshot) => (
                           <div
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
-                            className="p-3 border rounded bg-white"
+                            className={`p-3 border rounded bg-white w-full transition-shadow duration-200 ${
+                              snapshot.isDragging
+                                ? "shadow-lg bg-indigo-50"
+                                : ""
+                            }`}
+                           
                           >
                             <div className="font-semibold mb-1">
                               {subQ.questionText}

@@ -52,6 +52,10 @@ export async function POST(req: Request) {
       await newForm.save();
     }
 
+    await UserModel.findByIdAndUpdate(user._id, {
+      $push: { forms: newForm._id },
+    });
+
     return NextResponse.json(
       { message: "Form created successfully", form: newForm },
       { status: 201 }

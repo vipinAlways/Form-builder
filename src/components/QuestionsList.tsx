@@ -30,7 +30,7 @@ interface QuestionsListProps {
 
 export function QuestionsList({ questions, isMobile }: QuestionsListProps) {
   return (
-    <div className="flex flex-col gap-1 sm:w-full  min-w-xs border">
+    <div className="flex flex-col gap-1 sm:w-full  min-w-xs">
       <h2>Questions List</h2>
       {questions.length === 0 && <p>No questions added yet.</p>}
       <ul>
@@ -83,10 +83,18 @@ export function QuestionsList({ questions, isMobile }: QuestionsListProps) {
                               {i + 1}.{index + 1}
                             </span>
                             <div>
-                              <h4 className="font-semibold">{ques.questionText}</h4>
+                              <h4 className="font-semibold">
+                                {ques.questionText}
+                              </h4>
                               <ol>
                                 {ques.options?.map((op, index) => (
-                                  <li className={cn(op === ques.correctAnswer && "text-green-700")} key={index}>
+                                  <li
+                                    className={cn(
+                                      op === ques.correctAnswer &&
+                                        "text-green-700"
+                                    )}
+                                    key={index}
+                                  >
                                     {op}
                                   </li>
                                 ))}

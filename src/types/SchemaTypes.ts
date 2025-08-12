@@ -4,6 +4,7 @@ export interface UserSchema extends Document {
   email: string;
   image: string;
   forms: Types.ObjectId | FormSchema[];
+  submittedForms: Types.ObjectId | FormSchema[];
 }
 export interface CategorizeOption {
   text: string;
@@ -15,6 +16,7 @@ export interface FormSchema extends Document {
   headerImage: string;
   questions: Types.ObjectId | QuestionsSchema[];
   user: Types.ObjectId | UserSchema;
+  submission:Types.ObjectId
   theme: {
     bg: string;
     color: string;

@@ -2,6 +2,7 @@
 
 // Client-side TypeScript interface
 export interface QuestionsClient {
+  _id?:string
   type: "categorize" | "cloze" | "comprehension" | string;
   questionText: string;
   imageUrl?: string;
@@ -55,3 +56,22 @@ export const emptyQuestion: QuestionsClient = {
   options: [],
 };
 // Mongoose document type (for server-side usage)
+
+
+export interface ComprehensionAnswer {
+  answer: string; // selected option
+}
+
+export interface CategoryAnswer {
+  text: string;
+  belongs: string;
+}
+
+export interface ClozeAnswer {
+  text: string;
+}
+
+export type StudentAnswer =
+  | { questionId: string; type: "comprehension"; answer: ComprehensionAnswer }
+  | { questionId: string; type: "categorize"; answer: CategoryAnswer[] }
+  | { questionId: string; type: "cloze"; answer: ClozeAnswer };
