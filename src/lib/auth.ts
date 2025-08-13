@@ -13,7 +13,7 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
     }),
   ],
-  secret:process.env.AUTH_SECRET,
+  secret:process.env.NEXTAUTH_SECRET,
   callbacks: {
     async signIn({ user }) {
       await db();
